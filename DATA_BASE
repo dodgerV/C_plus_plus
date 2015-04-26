@@ -1106,6 +1106,18 @@ List<Actions> *create_Actions_list_from_Console(List<Condition> *Cond,List<Asset
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+void menu()
+{
+		cout<<"0) Menu"<<endl;
+		cout<<"1) Table MainFounds"<<endl;
+		cout<<"2) Table Condition"<<endl;
+		cout<<"3) Table Assets"<<endl;
+		cout<<"4) Table ResidualValue"<<endl;
+		cout<<"5) Table Amortization"<<endl;
+		cout<<"6) Table Actions"<<endl;
+		cout<<"Press 7 or higher To exit"<<endl;
+}
+
 int main()
 {
 	List<Condition> *first;
@@ -1114,45 +1126,70 @@ int main()
 	List<ResidualValue> *first_RV;
 	List<Amortization> *first_Amort;
 	List<Actions> *first_Act;
-	first=Load_Condition_list_from_file();
+	bool flag=true;
+	int k=0;
+	menu();
+	while(flag){
+		cout<<"Choose item: ";
+		cin>>k;
+		cout<<endl;
+		switch(k){
+			case 0:
+			menu();
+			break;
+			case 1:
+			first_MF=Load_MainFounds_list_from_file();
+			break;
+			case 2:
+			first=Load_Condition_list_from_file();
+			break;
+			case 3:
+			first_Assets=Load_Assets_list_from_file(first_MF);
+			break;
+			case 4:
+			first_RV=Load_ResidualValue_list_from_file(first_Assets);
+			break;
+			case 5:
+			first_Amort=Load_Amortization_list_from_file(first_Assets);
+			break;
+			case 6:
+			first_Act=Load_Actions_list_from_file(first,first_Assets);
+			break;
+			default:
+			flag=false;
+			break;
+		}
+		cout<<endl;
+	}
+	
+
+	
+	
 	/*
 	first=print_list(first);
 	first=print_list_in_file(first);
 	first=create_Condition_list_from_Console();
 	first=print_list(first);*/
 	
-	cout<<"\n******\n******\n******\n"<<endl;
-	first_MF=Load_MainFounds_list_from_file();
+	
 	/*first_MF=print_list_in_file(first_MF);
 	first_MF=create_MainFounds_list_from_Console();
 	first_MF=print_list(first_MF);*/
 	
-	cout<<"******************"<<endl;
-	cout<<"******************"<<endl;
-	cout<<"******************"<<endl;
-	first_Assets=Load_Assets_list_from_file(first_MF);
 	/*first_Assets=print_list_in_file(first_Assets);
 	first_Assets=create_Assets_list_from_Console(first_MF);
 	first_Assets=print_list(first_Assets);*/
 
-	cout<<"******************"<<endl;
-	cout<<"******************"<<endl;
-	cout<<"******************"<<endl;
-	first_RV=Load_ResidualValue_list_from_file(first_Assets);
+
+	
 	/*first_RV=print_list_in_file(first_RV);
 	first_RV=create_ResidualValue_list_from_Console(first_Assets);
 	first_RV=print_list(first_RV);*/
 
-	cout<<"******************"<<endl;
-	cout<<"******************"<<endl;
-	cout<<"******************"<<endl;
-	first_Amort=Load_Amortization_list_from_file(first_Assets);
+	
 	/*first_Amort=print_list_in_file(first_Amort);
 	first_Amort=create_Amortization_list_from_Console(first_Assets);
 	first_Amort=print_list(first_Amort);*/
 
-	cout<<"******************"<<endl;
-	cout<<"******************"<<endl;
-	cout<<"******************"<<endl;
-	first_Act=Load_Actions_list_from_file(first,first_Assets);
+	
 }
