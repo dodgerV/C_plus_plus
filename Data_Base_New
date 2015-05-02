@@ -1,0 +1,1727 @@
+#include <iostream>
+#include <stdlib.h>
+#include <string.h>
+#include <fstream>
+
+using namespace std;
+
+template<class T> class List
+{
+	public:
+		List(){};
+		List(T);
+		List *prev;
+		List *next;
+		T data;
+};
+
+template<class T> List<T>::List(T inf)
+{
+	List::data=inf;
+	prev=NULL;
+	next=NULL;
+}
+
+
+template<class T> List<T> *add_to_end(List<T> *first,List<T> *elem)
+{
+ 	
+	List<T> *temp=NULL;
+	temp=first;
+	while(temp->next!=NULL) temp=temp->next;
+
+	elem->prev=temp;
+	temp->next=elem;
+	return first;
+}
+
+
+
+
+//***************************************************************
+//***************************************************************
+//***************************************************************
+
+//ТАБЛИЦА Основные Фонды
+struct MainFounds{
+		MainFounds(){};
+		MainFounds(int,char*);
+		void print();
+		void print_in_file(ofstream&);
+		int code;
+		char name[70];
+};
+
+// Конструктор таблицы
+MainFounds::MainFounds(int code,char *name)
+{
+	MainFounds::code=code;
+	strcpy(MainFounds::name,name);
+}
+
+//Функции печати списка
+
+void MainFounds::print(){
+cout <<"  "<< code <<'\t'<< name << endl;
+}
+
+List<MainFounds> *print_list(List<MainFounds> *first)
+{
+	while(first->prev!=NULL)first=first->prev;
+while(first!=NULL){
+	first->data.print();
+	if(first->next==NULL) break;
+	else first=first->next;
+	}
+while(first->prev!=NULL) first=first->prev;
+return first;
+}
+
+
+List<MainFounds> *Load_MainFounds_list_from_file()
+{
+	int code,i,count;
+	char name[70];
+	List<MainFounds> *pointer;
+	ifstream fin("MainFounds_file_for_load.txt");
+
+	if(!fin.is_open())
+	{
+		cout << "Error file doesn't exist" << endl;
+	}
+	else
+	{
+		for(i=0;!fin.eof();i++)
+			{
+				fin >> code;
+				fin >> name;
+				MainFounds obj(code,name);
+				List<MainFounds> *P = new List<MainFounds>(obj);
+				if(i==0) pointer=P;
+				else pointer=add_to_end(pointer,P);
+				count=i;
+			}
+		
+		cout<<count<<endl;
+		while(pointer->next!=NULL)
+		{
+			pointer=pointer->next;
+		}
+
+		pointer=pointer->prev;
+		pointer->next->prev=NULL;
+		pointer->next=NULL;
+
+		while(pointer->prev!=NULL)
+		{
+			pointer=pointer->prev;
+		}
+	}
+	fin.close();
+	pointer=print_list(pointer);
+	return pointer;
+}
+
+
+void MainFounds::print_in_file(ofstream &fout)
+{
+		fout << code << "   " << name << endl;
+}
+
+List<MainFounds> *print_list_in_file(List<MainFounds> *first)
+{
+	ofstream fout("MainFounds_from_Data_Base.txt");
+	if(!fout.is_open())
+	{
+		cout << "Error of file reading!" << endl;
+	}
+	else
+	{
+		while(first!=NULL)
+			{
+				first->data.print_in_file(fout);
+				if(first->next==NULL) break;
+				first=first->next;
+			}
+	}
+	fout.close();
+	return first;
+}
+
+//Функция создания таблицы Основные фонды и записи данных в неё с консоли
+List<MainFounds> *create_MainFounds_list_from_Console()
+{
+	int code,i;
+	char name[70],c;
+	List<MainFounds> *pointer;
+
+	for(i=1;;i++)
+			{
+				cout << "Print code: ";
+				cin >> code;
+				cout << "Print name: ";
+				cin >> name;
+				MainFounds obj(code,name);
+				List<MainFounds> *A = new List<MainFounds>(obj);
+				if(i==1) pointer=A;
+				else pointer=add_to_end(pointer,A);
+				cout << "Do you want to continue(Y/N)?" ;
+				cin >> c ;
+				if(c=='Y' || c=='y') continue;
+				else break;
+			}
+	return pointer;
+} 
+
+ List<MainFounds> *Add_MainFounds_list_from_Console(List<MainFounds>* p)
+{
+	int code,i;
+	char name[70],c;
+
+	for(i=1;;i++)
+			{
+				cout << "Print code: ";
+				cin >> code;
+				cout << "Print name: ";
+				cin >> name;
+				MainFounds obj(code,name);
+				List<MainFounds> *temp = new List<MainFounds>(obj);
+				while(p->prev!=NULL)p=p->prev;
+				p=add_to_end(p,temp);
+				cout << "Do you want to continue(Y/N)?" ;
+				cin >> c ;
+				if(c=='Y' || c=='y') continue;
+				else break;
+			}
+	return p;
+} 
+
+//***************************************************************
+//***************************************************************
+//***************************************************************
+
+//ТАБЛИЦА Состояние
+struct Condition{
+		Condition(){};
+		Condition(int,char*);
+		void print();
+		void print_in_file(ofstream&);
+		int code;
+		char cond[70];
+};
+
+// Конструктор таблицы
+Condition::Condition(int code,char *cond)
+{
+	Condition::code=code;
+	strcpy(Condition::cond,cond);
+}
+
+//Функции печати списка
+
+void Condition::print(){
+cout <<"  "<< code <<'\t'<< cond << endl;
+}
+
+List<Condition> *print_list(List<Condition> *first)
+{
+	while(first->prev!=NULL)first=first->prev;
+while(first!=NULL){
+	first->data.print();
+	if(first->next==NULL) break;
+	else first=first->next;
+	}
+while(first->prev!=NULL) first=first->prev;
+return first;
+}
+
+
+List<Condition> *Load_Condition_list_from_file()
+{
+	int code,i;
+	char cond[70];
+	List<Condition> *pointer;
+	ifstream fin("Condition_file_for_load.txt");
+
+	if(!fin.is_open())
+	{
+		cout<<"Seriously"<<endl;
+		cout << "Error file doesn't exist" << endl;
+	}
+	else
+	{
+		for(i=0;!fin.eof();i++)
+			{
+				fin >> code;
+				fin >> cond;
+				Condition obj(code,cond);
+				List<Condition> *P = new List<Condition>(obj);
+				if(i==0) pointer=P;
+				else pointer=add_to_end(pointer,P);
+			}
+		
+		while(pointer->next!=NULL)
+		{
+			pointer=pointer->next;
+		}
+		pointer=pointer->prev;
+		pointer->next->prev=NULL;
+		pointer->next=NULL;
+		while(pointer->prev!=NULL)
+		{
+			pointer=pointer->prev;
+		}
+	}
+	fin.close();
+	pointer=print_list(pointer);
+	return pointer;
+}
+
+
+void Condition::print_in_file(ofstream &fout)
+{
+		fout << code << "   " << cond << endl;
+}
+
+List<Condition> *print_list_in_file(List<Condition> *first)
+{
+	ofstream fout("Condition_from_Data_Base.txt");
+	if(!fout.is_open())
+	{
+		cout << "Error of file reading!" << endl;
+	}
+	else
+	{
+		while(first!=NULL)
+			{
+				first->data.print_in_file(fout);
+				if(first->next==NULL) break;
+				first=first->next;
+			}
+	}
+	fout.close();
+	return first;
+}
+
+//Функция создания таблицы Состояние и записи данных в неё с консоли
+List<Condition> *create_Condition_list_from_Console()
+{
+	int code,i;
+	char cond[70],c;
+	List<Condition> *pointer;
+
+	for(i=1;;i++)
+			{
+				cout << "Print code: ";
+				cin >> code;
+				cout << "Print Condition: ";
+				cin >> cond;
+				Condition obj(code,cond);
+				List<Condition> *A = new List<Condition>(obj);
+				if(i==1) pointer=A;
+				else pointer=add_to_end(pointer,A);
+				cout << "Do you want to continue(Y/N)?" ;
+				cin >> c ;
+				if(c=='Y' || c=='y') continue;
+				else break;
+			}
+	return pointer;
+}
+
+List<Condition> *Add_Condition_list_from_Console(List<Condition>* p)
+{
+	int code,i;
+	char cond[70],c;
+
+	for(i=1;;i++)
+			{
+				cout << "Print code: ";
+				cin >> code;
+				cout << "Print Condition: ";
+				cin >> cond;
+				Condition obj(code,cond);
+				List<Condition> *temp = new List<Condition>(obj);
+				while(p->prev!=NULL)p=p->prev;
+				p=add_to_end(p,temp);
+				cout << "Do you want to continue(Y/N)?" ;
+				cin >> c ;
+				if(c=='Y' || c=='y') continue;
+				else break;
+			}
+	return p;
+}
+//***************************************************************
+//***************************************************************
+//***************************************************************
+
+
+//ТАБЛИЦА Активы
+
+struct Assets{
+		Assets(){};
+		Assets(int,char*,double,double,double,int);
+		void print();
+		void print_in_file(ofstream&);
+		int code;
+		char name[80];
+		double cost;
+		double amort_norm;
+		double left_cost;
+		int code_MF;
+		List<MainFounds> name_of_MainFound;	
+		
+};
+
+Assets::Assets(int code,char *name,double cost,double amort_norm,double left_cost,int code_MF)
+{
+	Assets::code=code;
+	strcpy(Assets::name,name);
+	Assets::cost=cost;
+	Assets::amort_norm=amort_norm;
+	Assets::left_cost=left_cost;
+	Assets::code_MF=code_MF;
+}
+
+//Функции печати списка
+
+void Assets::print(){
+cout <<"\t"<< code<<"\t" << name<<"\t" <<cost <<"\t"<< amort_norm<<"\t" << left_cost <<"\t"<< name_of_MainFound.data.name<<endl; 
+}
+
+List<Assets> *print_list(List<Assets> *first)
+{
+	while(first->prev!=NULL)first=first->prev;
+while(first!=NULL){
+	first->data.print();
+	if(first->next==NULL) break;
+	else first=first->next;
+	}
+while(first->prev!=NULL) first=first->prev;
+return first;
+}
+
+
+List<Assets> *Load_Assets_list_from_file(List<MainFounds> *MF)
+{
+		char name[80];
+		double cost,amort_norm,left_cost;	
+		int code_MF,code;
+
+	int i,j;
+	List<Assets> *pointer;
+
+	ifstream fin("Assets_file_for_load.txt");
+	if(!fin.is_open())
+	{
+		cout << "Error of file reading!" << endl;
+	}
+	else
+	{
+		for(i=0;!fin.eof();i++)
+			{
+				fin >> code;
+				fin >> name;
+				fin >> cost;
+				fin >> amort_norm;
+				fin >> left_cost;
+				fin >> code_MF;
+				Assets obj(code,name,cost,amort_norm,left_cost,code_MF);
+				for(j=1;;j++)
+				{
+					
+					if(code_MF==MF->data.code)
+					{
+						obj.name_of_MainFound=MF->data;
+						break;
+					}
+					else 
+					{	
+						if(MF->next==NULL) break;
+						else MF=MF->next;
+					}
+				}
+				while(MF->prev!=NULL)
+				{
+					MF=MF->prev;
+				}
+				
+				List<Assets> *A = new List<Assets>(obj);
+				if(i==0) pointer=A;
+				else pointer=add_to_end(pointer,A);
+			}
+
+		while(pointer->next!=NULL)
+		{
+			pointer=pointer->next;
+		}
+		pointer=pointer->prev;
+		pointer->next->prev=NULL;
+		pointer->next=NULL;
+		while(pointer->prev!=NULL)
+		{
+			pointer=pointer->prev;
+		}
+	}
+	fin.close();
+	pointer=print_list(pointer);
+	return pointer;
+}
+
+
+void Assets::print_in_file(ofstream &fout)
+{ 
+	fout << code << "\t"<<name<< "\t" << cost << "\t"<<amort_norm  << "\t"<<left_cost <<"\t"<< name_of_MainFound.data.name << endl;
+}
+
+List<Assets> *print_list_in_file(List<Assets> *first)
+{
+	ofstream fout("Assets_from_Data_Base.txt");
+	if(!fout.is_open())
+	{
+		cout << "Error of file reading!" << endl;
+	}
+	else
+	{
+		for(;first!=NULL;)
+			{
+				first->data.print_in_file(fout);
+				if(first->next==NULL) break;
+				first=first->next;
+			}
+	}
+	fout.close();
+	return first;
+}
+
+//Функция создания таблицы Активы и записи данных в неё с консоли
+
+
+List<Assets> *create_Assets_list_from_Console(List<MainFounds> *MF)
+{
+	char name[80];
+		double cost,amort_norm,left_cost;
+		int code_MF,code;
+
+	int i,j;
+	List<Assets> *pointer;
+	char c;
+	for(i=1;;i++)
+			{
+				cout << "Enter Assets code: ";
+				cin >> code;
+				cout << "Enter Assets name: ";
+				cin >> name;
+				cout << "Enter cost: ";
+				cin >> cost;
+				cout << "Enter amort_norm: ";
+				cin >> amort_norm;
+				cout << "Enter left_cost: ";
+				cin >> left_cost;
+				cout << "Enter code of MainFound: ";
+				cin >> code_MF;
+
+				Assets obj(code,name,cost,amort_norm,left_cost,code_MF);
+				for(j=1;;j++)
+				{
+					if(code_MF==MF->data.code)
+					{
+						obj.name_of_MainFound=MF->data;
+						break;
+					}
+					else 
+					{	
+						if(MF->next==NULL) break;
+						else MF=MF->next;
+					}
+				}
+				while(MF->prev!=NULL)
+				{
+					MF=MF->prev;
+				}
+				
+				List<Assets> *A = new List<Assets>(obj);
+				if(i==1) pointer=A;
+				else pointer=add_to_end(pointer,A);
+				cout << "Do you want to continue(Y/N)?" ;
+				cin >> c ;
+				if(c=='Y' || c=='y') continue;
+				else break;
+			}
+	return pointer;
+}
+
+List<Assets> *Add_Assets_list_from_Console(List<Assets> *pointer,List<MainFounds> *MF)
+{
+	char name[80];
+		double cost,amort_norm,left_cost;
+		int code_MF,code;
+
+	int i,j;
+	
+	char c;
+	for(i=1;;i++)
+			{
+				cout << "Enter Assets code: ";
+				cin >> code;
+				cout << "Enter Assets name: ";
+				cin >> name;
+				cout << "Enter cost: ";
+				cin >> cost;
+				cout << "Enter amort_norm: ";
+				cin >> amort_norm;
+				cout << "Enter left_cost: ";
+				cin >> left_cost;
+				cout << "Enter code of MainFound: ";
+				cin >> code_MF;
+
+				Assets obj(code,name,cost,amort_norm,left_cost,code_MF);
+				for(j=1;;j++)
+				{
+					if(code_MF==MF->data.code)
+					{
+						obj.name_of_MainFound=MF->data;
+						break;
+					}
+					else 
+					{	
+						if(MF->next==NULL) break;
+						else MF=MF->next;
+					}
+				}
+				while(MF->prev!=NULL)
+				{
+					MF=MF->prev;
+				}
+				
+				List<Assets> *A = new List<Assets>(obj);
+				while(pointer->prev!=NULL)pointer=pointer->prev;
+				pointer=add_to_end(pointer,A);
+				cout << "Do you want to continue(Y/N)?" ;
+				cin >> c ;
+				if(c=='Y' || c=='y') continue;
+				else break;
+			}
+	return pointer;
+}
+
+//КОНЕЦ ТАБЛИЦЫ Активы
+
+//***************************************************************
+//***************************************************************
+//***************************************************************
+
+
+//ТАБЛИЦА Остаточная стоимость
+
+struct ResidualValue{
+		ResidualValue(){};
+		ResidualValue(int,char*,double,int);
+		void print();
+		void print_in_file(ofstream&);
+		int code;
+		char date[12];
+		double left_cost;
+		int code_Asset;
+		List<Assets> name_of_Asset;	
+		
+};
+
+ResidualValue::ResidualValue(int code,char *date,double left_cost,int code_Asset)
+{
+	ResidualValue::code=code;
+	strcpy(ResidualValue::date,date);
+	ResidualValue::left_cost=left_cost;
+	ResidualValue::code_Asset=code_Asset;
+}
+
+//Функции печати списка
+
+void ResidualValue::print(){
+cout <<"\t"<< code<<"\t" << date<<"\t" << left_cost <<"\t"<< name_of_Asset.data.name<<endl; 
+}
+
+List<ResidualValue> *print_list(List<ResidualValue> *first)
+{
+	while(first->prev!=NULL)first=first->prev;
+while(first!=NULL){
+	first->data.print();
+	if(first->next==NULL) break;
+	else first=first->next;
+	}
+while(first->prev!=NULL) first=first->prev;
+return first;
+}
+
+
+List<ResidualValue> *Load_ResidualValue_list_from_file(List<Assets> *As)
+{
+		char date[12];
+		double left_cost;	
+		int code_Asset,code;
+
+	int i,j;
+	List<ResidualValue> *pointer;
+
+	ifstream fin("ResidualValue_file_for_load.txt");
+	if(!fin.is_open())
+	{
+		cout << "Error of file reading!" << endl;
+	}
+	else
+	{
+		for(i=0;!fin.eof();i++)
+			{
+				fin >> code;
+				fin >> date;
+				fin >> left_cost;
+				fin >> code_Asset;
+				ResidualValue obj(code,date,left_cost,code_Asset);
+				for(j=1;;j++)
+				{
+					
+					if(code_Asset==As->data.code)
+					{
+						obj.name_of_Asset=As->data;
+						break;
+					}
+					else 
+					{	
+						if(As->next==NULL) break;
+						else As=As->next;
+					}
+				}
+				while(As->prev!=NULL)
+				{
+					As=As->prev;
+				}
+				
+				List<ResidualValue> *A = new List<ResidualValue>(obj);
+				if(i==0) pointer=A;
+				else pointer=add_to_end(pointer,A);
+			}
+
+		while(pointer->next!=NULL)
+		{
+			pointer=pointer->next;
+		}
+		pointer=pointer->prev;
+		pointer->next->prev=NULL;
+		pointer->next=NULL;
+		while(pointer->prev!=NULL)
+		{
+			pointer=pointer->prev;
+		}
+	}
+	fin.close();
+	pointer=print_list(pointer);
+	return pointer;
+}
+
+
+void ResidualValue::print_in_file(ofstream &fout)
+{ 
+	fout << code << "\t"<<date<< "\t"<<left_cost <<"\t"<< name_of_Asset.data.name << endl;
+}
+
+List<ResidualValue> *print_list_in_file(List<ResidualValue> *first)
+{
+	ofstream fout("ResidualValue_from_Data_Base.txt");
+	if(!fout.is_open())
+	{
+		cout << "Error of file reading!" << endl;
+	}
+	else
+	{
+		for(;first!=NULL;)
+			{
+				first->data.print_in_file(fout);
+				if(first->next==NULL) break;
+				first=first->next;
+			}
+	}
+	fout.close();
+	return first;
+}
+
+//Функция создания таблицы Остаточная стоимость и записи данных в неё с консоли
+
+
+List<ResidualValue> *create_ResidualValue_list_from_Console(List<Assets> *As)
+{
+	char date[12];
+		double left_cost;
+		int code_Asset,code;
+
+	int i,j;
+	List<ResidualValue> *pointer;
+	char c;
+	for(i=1;;i++)
+			{
+				cout << "Enter ResidualValue code: ";
+				cin >> code;
+				cout << "Enter date: ";
+				cin >> date;
+				cout << "Enter left_cost: ";
+				cin >> left_cost;
+				cout << "Enter code of Asset: ";
+				cin >> code_Asset;
+
+				ResidualValue obj(code,date,left_cost,code_Asset);
+				for(j=1;;j++)
+				{
+					if(code_Asset==As->data.code)
+					{
+						obj.name_of_Asset=As->data;
+						break;
+					}
+					else 
+					{	
+						if(As->next==NULL) break;
+						else As=As->next;
+					}
+				}
+				while(As->prev!=NULL)
+				{
+					As=As->prev;
+				}
+				
+				List<ResidualValue> *A = new List<ResidualValue>(obj);
+				if(i==1) pointer=A;
+				else pointer=add_to_end(pointer,A);
+				cout << "Do you want to continue(Y/N)?" ;
+				cin >> c ;
+				if(c=='Y' || c=='y') continue;
+				else break;
+			}
+	return pointer;
+}
+List<ResidualValue> *Add_ResidualValue_list_from_Console(List<ResidualValue> *pointer,List<Assets> *As)
+{
+	char date[12];
+		double left_cost;
+		int code_Asset,code;
+
+	int i,j;
+	char c;
+	for(i=1;;i++)
+			{
+				cout << "Enter ResidualValue code: ";
+				cin >> code;
+				cout << "Enter date: ";
+				cin >> date;
+				cout << "Enter left_cost: ";
+				cin >> left_cost;
+				cout << "Enter code of Asset: ";
+				cin >> code_Asset;
+
+				ResidualValue obj(code,date,left_cost,code_Asset);
+				for(j=1;;j++)
+				{
+					if(code_Asset==As->data.code)
+					{
+						obj.name_of_Asset=As->data;
+						break;
+					}
+					else 
+					{	
+						if(As->next==NULL) break;
+						else As=As->next;
+					}
+				}
+				while(As->prev!=NULL)
+				{
+					As=As->prev;
+				}
+				
+				List<ResidualValue> *A = new List<ResidualValue>(obj);
+				pointer=add_to_end(pointer,A);
+				cout << "Do you want to continue(Y/N)?" ;
+				cin >> c ;
+				if(c=='Y' || c=='y') continue;
+				else break;
+			}
+	return pointer;
+}
+//КОНЕЦ ТАБЛИЦЫ Остаточная стоимость
+
+//***************************************************************
+//***************************************************************
+//***************************************************************
+
+
+//ТАБЛИЦА Амортизация
+
+struct Amortization{
+		Amortization(){};
+		Amortization(int,char*,double,int);
+		void print();
+		void print_in_file(ofstream&);
+		int code;
+		char date[12];
+		double summ;
+		int code_Asset;
+		List<Assets> name_of_Asset;	
+		
+};
+
+Amortization::Amortization(int code,char *date,double summ,int code_Asset)
+{
+	Amortization::code=code;
+	strcpy(Amortization::date,date);
+	Amortization::summ=summ;
+	Amortization::code_Asset=code_Asset;
+}
+
+//Функции печати списка
+
+void Amortization::print(){
+cout <<"\t"<< code<<"\t" << date<<"\t" << summ <<"\t"<< name_of_Asset.data.name<<endl; 
+}
+
+List<Amortization> *print_list(List<Amortization> *first)
+{
+	while(first->prev!=NULL)first=first->prev;
+while(first!=NULL){
+	first->data.print();
+	if(first->next==NULL) break;
+	else first=first->next;
+	}
+while(first->prev!=NULL) first=first->prev;
+return first;
+}
+
+
+List<Amortization> *Load_Amortization_list_from_file(List<Assets> *As)
+{
+		char date[12];
+		double summ;	
+		int code_Asset,code;
+
+	int i,j;
+	List<Amortization> *pointer;
+
+	ifstream fin("Amortization_file_for_load.txt");
+	if(!fin.is_open())
+	{
+		cout << "Error of file reading!" << endl;
+	}
+	else
+	{
+		for(i=0;!fin.eof();i++)
+			{
+				fin >> code;
+				fin >> date;
+				fin >> summ;
+				fin >> code_Asset;
+				Amortization obj(code,date,summ,code_Asset);
+				for(j=1;;j++)
+				{
+					
+					if(code_Asset==As->data.code)
+					{
+						obj.name_of_Asset=As->data;
+						break;
+					}
+					else 
+					{	
+						if(As->next==NULL) break;
+						else As=As->next;
+					}
+				}
+				while(As->prev!=NULL)
+				{
+					As=As->prev;
+				}
+				
+				List<Amortization> *A = new List<Amortization>(obj);
+				if(i==0) pointer=A;
+				else pointer=add_to_end(pointer,A);
+			}
+
+		while(pointer->next!=NULL)
+		{
+			pointer=pointer->next;
+		}
+		pointer=pointer->prev;
+		pointer->next->prev=NULL;
+		pointer->next=NULL;
+		while(pointer->prev!=NULL)
+		{
+			pointer=pointer->prev;
+		}
+	}
+	fin.close();
+	pointer=print_list(pointer);
+	return pointer;
+}
+
+
+void Amortization::print_in_file(ofstream &fout)
+{ 
+	fout << code << "\t"<<date<< "\t"<<summ <<"\t"<< name_of_Asset.data.name << endl;
+}
+
+List<Amortization> *print_list_in_file(List<Amortization> *first)
+{
+	ofstream fout("Amortization_from_Data_Base.txt");
+	if(!fout.is_open())
+	{
+		cout << "Error of file reading!" << endl;
+	}
+	else
+	{
+		while(first!=NULL)
+			{
+				first->data.print_in_file(fout);
+				if(first->next==NULL) break;
+				first=first->next;
+			}
+	}
+	fout.close();
+	return first;
+}
+
+//Функция создания таблицы Амортизация и записи данных в неё с консоли
+
+
+List<Amortization> *create_Amortization_list_from_Console(List<Assets> *As)
+{
+	char date[12];
+		double summ;
+		int code_Asset,code;
+
+	int i,j;
+	List<Amortization> *pointer;
+	char c;
+	for(i=1;;i++)
+			{
+				cout << "Enter Amortization code: ";
+				cin >> code;
+				cout << "Enter date: ";
+				cin >> date;
+				cout << "Enter summ: ";
+				cin >> summ;
+				cout << "Enter code of Asset: ";
+				cin >> code_Asset;
+
+				Amortization obj(code,date,summ,code_Asset);
+				for(j=1;;j++)
+				{
+					if(code_Asset==As->data.code)
+					{
+						obj.name_of_Asset=As->data;
+						break;
+					}
+					else 
+					{	
+						if(As->next==NULL) break;
+						else As=As->next;
+					}
+				}
+				while(As->prev!=NULL)
+				{
+					As=As->prev;
+				}
+				
+				List<Amortization> *A = new List<Amortization>(obj);
+				if(i==1) pointer=A;
+				else pointer=add_to_end(pointer,A);
+				cout << "Do you want to continue(Y/N)?" ;
+				cin >> c ;
+				if(c=='Y' || c=='y') continue;
+				else break;
+			}
+	return pointer;
+}
+
+List<Amortization> *Add_Amortization_list_from_Console(List<Assets> *As,List<Amortization>*p)
+{
+	char date[12];
+		double summ;
+		int code_Asset,code;
+
+	int i,j;
+	char c;
+
+	for(i=1;;i++)
+			{
+				cout << "Enter Amortization code: ";
+				cin >> code;
+				cout << "Enter date: ";
+				cin >> date;
+				cout << "Enter summ: ";
+				cin >> summ;
+				cout << "Enter code of Asset: ";
+				cin >> code_Asset;
+
+				Amortization obj(code,date,summ,code_Asset);
+				for(j=1;;j++)
+				{
+					if(code_Asset==As->data.code)
+					{
+						obj.name_of_Asset=As->data;
+						break;
+					}
+					else 
+					{	
+						if(As->next==NULL) break;
+						else As=As->next;
+					}
+				}
+				while(As->prev!=NULL)
+				{
+					As=As->prev;
+				}
+				List<Amortization>* temp=new List<Amortization>(obj);
+				while(p->prev!=NULL)p=p->prev;
+				p=add_to_end(p,temp);
+				cout << "Do you want to continue(Y/N)?" ;
+				cin >> c ;
+				if(c=='Y' || c=='y') continue;
+				else break;
+			}
+	return p;
+}
+//КОНЕЦ ТАБЛИЦЫ Амортизация
+
+//***************************************************************
+//***************************************************************
+//***************************************************************
+
+//ТАБЛИЦА Действия
+struct Actions{
+		Actions(){};
+		Actions(int,char*,int,int);
+		void print();
+		void print_in_file(ofstream&);
+		int code;
+		char date[12];
+		int code_cond;
+		int code_Asset;
+		List<Condition> name_of_Condition;
+		List<Assets> name_of_Asset;
+};
+
+// Конструктор таблицы
+Actions::Actions(int code,char *date,int code_cond,int code_Asset)
+{
+	Actions::code=code;
+	strcpy(Actions::date,date);
+	Actions::code_cond=code_cond;
+	Actions::code_Asset=code_Asset;
+}
+
+//Функции печати списка
+
+void Actions::print(){
+cout <<"\t"<< code <<'\t'<<date<<'\t'<< name_of_Condition.data.cond<<'\t'<<name_of_Asset.data.name << endl;
+}
+
+List<Actions> *print_list(List<Actions> *first)
+{
+	while(first->prev!=NULL)first=first->prev;
+while(first!=NULL){
+	first->data.print();
+	if(first->next==NULL) break;
+	else first=first->next;
+	}
+while(first->prev!=NULL) first=first->prev;
+return first;
+}
+
+
+List<Actions> *Load_Actions_list_from_file(List<Condition> *Cond,List<Assets> *As)
+{
+	int code,i,j;
+	int code_cond,code_Asset;
+	char date[12];
+	List<Actions> *pointer;
+	ifstream fin("Actions_file_for_load.txt");
+
+	if(!fin.is_open())
+	{
+		cout << "Error file doesn't exist" << endl;
+	}
+	else
+	{
+		for(i=0;!fin.eof();i++)
+			{
+				fin >> code;
+				fin >> date;
+				fin >> code_cond;
+				fin >> code_Asset;
+				Actions obj(code,date,code_cond,code_Asset);
+				for(j=1;;j++)
+				{
+					
+					if(code_Asset==As->data.code)
+					{
+						obj.name_of_Asset=As->data;
+						break;
+					}
+					else 
+					{	
+						if(As->next==NULL) break;
+						else As=As->next;
+					}
+				}
+
+				while(As->prev!=NULL)
+				{
+					As=As->prev;
+				}
+
+				for(j=1;;j++)
+				{
+					
+					if(code_cond==Cond->data.code)
+					{
+						obj.name_of_Condition=Cond->data;
+						break;
+					}
+					else 
+					{	
+						if(Cond->next==NULL) break;
+						else Cond=Cond->next;
+					}
+				}
+
+				while(Cond->prev!=NULL)
+				{
+					Cond=Cond->prev;
+				}
+
+				List<Actions> *P = new List<Actions>(obj);
+				if(i==0) pointer=P;
+				else pointer=add_to_end(pointer,P);
+			}
+		
+		while(pointer->next!=NULL)
+		{
+			pointer=pointer->next;
+		}
+		pointer=pointer->prev;
+		pointer->next->prev=NULL;
+		pointer->next=NULL;
+		while(pointer->prev!=NULL)
+		{
+			pointer=pointer->prev;
+		}
+	}
+	fin.close();
+	pointer=print_list(pointer);
+	return pointer;
+}
+
+
+void Actions::print_in_file(ofstream &fout)
+{
+	fout <<"\t"<< code <<'\t'<<date<<'\t'<< name_of_Condition.data.cond<<'\t'<<name_of_Asset.data.name << endl;
+}
+
+List<Actions> *print_list_in_file(List<Actions> *first)
+{
+	ofstream fout("Actions_from_Data_Base.txt");
+	if(!fout.is_open())
+	{
+		cout << "Error of file reading!" << endl;
+	}
+	else
+	{
+		while(first!=NULL)
+			{
+				first->data.print_in_file(fout);
+				if(first->next==NULL) break;
+				first=first->next;
+			}
+	}
+	fout.close();
+	return first;
+}
+
+//Функция создания таблицы Дествия и записи данных в неё с консоли
+List<Actions> *create_Actions_list_from_Console(List<Condition> *Cond,List<Assets> *As)
+{
+	int code,i,j;
+	int code_cond,code_Asset;
+	char date[12],c;
+	List<Actions> *pointer;
+
+	for(i=1;;i++)
+			{
+				cout << "Enter Action code: ";
+				cin >> code;
+				cout << "Enter date: ";
+				cin >> date;
+				cout << "Enter Condition code: ";
+				cin >> code_cond;
+				cout << "Enter Asset code: ";
+				cin >> code_Asset;
+				Actions obj(code,date,code_cond,code_Asset);
+				for(j=1;;j++)
+				{
+					
+					if(code_Asset==As->data.code)
+					{
+						obj.name_of_Asset=As->data;
+						break;
+					}
+					else 
+					{	
+						if(As->next==NULL) break;
+						else As=As->next;
+					}
+				}
+				while(As->prev!=NULL)
+				{
+					As=As->prev;
+				}
+
+				for(j=1;;j++)
+				{
+					
+					if(code_cond==Cond->data.code)
+					{
+						obj.name_of_Condition=Cond->data;
+						break;
+					}
+					else 
+					{	
+						if(Cond->next==NULL) break;
+						else Cond=Cond->next;
+					}
+				}
+				while(Cond->prev!=NULL)
+				{
+					Cond=Cond->prev;
+				}
+
+				List<Actions> *A = new List<Actions>(obj);
+				if(i==1) pointer=A;
+				else pointer=add_to_end(pointer,A);
+				cout << "Do you want to continue(Y/N)?" ;
+				cin >> c ;
+				if(c=='Y' || c=='y') continue;
+				else break;
+			}
+	return pointer;
+
+}  
+
+List<Actions> *Add_Actions_list_from_Console(List<Actions> *pointer,List<Condition> *Cond,List<Assets> *As)
+{
+	int code,i,j;
+	int code_cond,code_Asset;
+	char date[12],c;
+
+	for(i=1;;i++)
+			{
+				cout << "Enter Action code: ";
+				cin >> code;
+				cout << "Enter date: ";
+				cin >> date;
+				cout << "Enter Condition code: ";
+				cin >> code_cond;
+				cout << "Enter Asset code: ";
+				cin >> code_Asset;
+				Actions obj(code,date,code_cond,code_Asset);
+				for(j=1;;j++)
+				{
+					
+					if(code_Asset==As->data.code)
+					{
+						obj.name_of_Asset=As->data;
+						break;
+					}
+					else 
+					{	
+						if(As->next==NULL) break;
+						else As=As->next;
+					}
+				}
+				while(As->prev!=NULL)
+				{
+					As=As->prev;
+				}
+
+				for(j=1;;j++)
+				{
+					
+					if(code_cond==Cond->data.code)
+					{
+						obj.name_of_Condition=Cond->data;
+						break;
+					}
+					else 
+					{	
+						if(Cond->next==NULL) break;
+						else Cond=Cond->next;
+					}
+				}
+				while(Cond->prev!=NULL)
+				{
+					Cond=Cond->prev;
+				}
+
+				List<Actions> *A = new List<Actions>(obj);
+				pointer=add_to_end(pointer,A);
+				cout << "Do you want to continue(Y/N)?" ;
+				cin >> c ;
+				if(c=='Y' || c=='y') continue;
+				else break;
+			}
+	return pointer;
+}  
+
+//***************************************************************
+//***************************************************************
+//***************************************************************
+
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+void menu()
+{
+		cout<<"0) Menu"<<endl;
+		cout<<"1) Table MainFounds"<<endl;
+		cout<<"2) Table Condition"<<endl;
+		cout<<"3) Table Assets"<<endl;
+		cout<<"4) Table ResidualValue"<<endl;
+		cout<<"5) Table Amortization"<<endl;
+		cout<<"6) Table Actions"<<endl;
+		cout<<"Press 7 or higher To exit"<<endl;
+}
+
+void extra_menu()
+{
+		cout<<"0) Exit from subMenu"<<endl;
+		cout<<"1) Show Table"<<endl;
+		cout<<"2) Add Data From Console"<<endl;
+		cout<<"3) Create New Table From Console"<<endl;
+		//cout<<"4) Load Base In File"<<endl
+
+}
+
+void Pclear()
+{
+	cout<<"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"<<endl;
+}
+
+void information()
+{
+		cout<<"\n\n"<<endl;
+		cout<<"Hello, this programm demonstrate demo model of Data Base"<<endl;
+		cout<<"All tables was downloaded from appropriate files and shown higher"<<endl;
+		cout<<"So you don't need to worry about mistakes connected with absence of information"<<endl;
+		cout<<"Every change that you make will be immediately reflected in new files"<<endl;
+		cout<<"You are welcome to test"<<endl;
+		cout<<endl;
+}
+
+List<Assets>* show_All_Constructions(List<Assets>* p)
+{
+	cout<<"\n"<<"DEMONSTRATION"<<endl;
+	int i;
+	for(i=0;;i++){
+
+		if(p->data.code_MF==1){
+			p->data.print();
+		}
+	
+		if(p->next==NULL) break;
+		else p=p->next;
+	}
+
+	while(p->prev!=NULL)
+	{
+		p=p->prev;
+	}
+	return p;
+}
+
+int main()
+{
+	List<Condition> *first;
+	List<MainFounds> *first_MF;
+	List<Assets> *first_Assets;
+	List<ResidualValue> *first_RV;
+	List<Amortization> *first_Amort;
+	List<Actions> *first_Act;
+
+//Loading
+first_MF=Load_MainFounds_list_from_file();
+first=Load_Condition_list_from_file();
+first_Assets=Load_Assets_list_from_file(first_MF);
+first_RV=Load_ResidualValue_list_from_file(first_Assets);
+first_Amort=Load_Amortization_list_from_file(first_Assets);
+first_Act=Load_Actions_list_from_file(first,first_Assets);
+//
+
+//**************************/
+
+	bool flag=true,changing=false,extra_flag=true;
+	int k=0,k1;
+	char c;
+	information();
+	menu();
+	while(flag){
+
+		cout<<"Choose item: ";
+		cin>>k;
+		cout<<endl;
+		switch(k){
+			case 0:
+			menu();
+			break;
+			case 1:
+			extra_flag=true;
+			k1=0;
+			Pclear();
+			extra_menu();
+
+			while(extra_flag){
+			cout<<"Choose subItem: ";
+			cin>>k1;
+			cout<<endl;
+
+			switch(k1){
+				
+				case 0:
+				extra_flag=false;
+				break;
+				case 1:
+				first_MF=print_list(first_MF);
+				break;
+				case 2:
+				first_MF=Add_MainFounds_list_from_Console(first_MF);
+				first_MF=print_list_in_file(first_MF);
+				changing=true;
+				break;
+				case 3:
+				if(changing==true)cout<<"Alert! Your Table will be rewrite if you continue"<<endl;
+				cout << "Do you want to continue(Y/N)?" ;
+				cin >> c ;
+				if(c=='Y' || c=='y') 
+					{
+						first_MF=create_MainFounds_list_from_Console();
+						first_MF=print_list_in_file(first_MF);
+					}
+				break;
+			}
+							}
+			break;
+
+			case 2:
+			extra_flag=true;
+			k1=0;
+			Pclear();
+			extra_menu();
+
+			while(extra_flag){
+			cout<<"Choose subItem: ";
+			cin>>k1;
+			cout<<endl;
+
+			switch(k1){
+				Pclear();
+				extra_menu();
+				case 0:
+				extra_flag=false;
+				break;
+				case 1:
+				first=print_list(first);
+				break;
+				case 2:
+				first=Add_Condition_list_from_Console(first);
+				first=print_list_in_file(first);
+				changing=true;
+				break;
+				case 3:
+				if(changing==true)cout<<"Alert! Your Table will be rewrite if you continue"<<endl;
+				cout << "Do you want to continue(Y/N)?" ;
+				cin >> c ;
+				if(c=='Y' || c=='y') 
+					{
+						first=create_Condition_list_from_Console();
+						first=print_list_in_file(first);
+					}
+				break;
+			}			
+							}
+			break;
+			case 3:
+			extra_flag=true;
+			k1=0;
+			Pclear();
+			extra_menu();
+
+			while(extra_flag){
+			cout<<"Choose subItem: ";
+			cin>>k1;
+			cout<<endl;
+
+			switch(k1){
+				Pclear();
+				extra_menu();
+				case 0:
+				extra_flag=false;
+				break;
+				case 1:
+				first_Assets=print_list(first_Assets);
+				break;
+				case 2:
+				first_Assets=Add_Assets_list_from_Console(first_Assets,first_MF);
+				first_Assets=print_list_in_file(first_Assets);
+				changing=true;
+				break;
+				case 3:
+				if(changing==true)cout<<"Alert! Your Table will be rewrite if you continue"<<endl;
+				cout << "Do you want to continue(Y/N)?" ;
+				cin >> c ;
+				if(c=='Y' || c=='y') 
+					{
+						first_Assets=create_Assets_list_from_Console(first_MF);
+						first_Assets=print_list_in_file(first_Assets);
+					}
+				break;
+
+			}
+							}
+			//first_Assets=show_All_Constructions(first_Assets);
+			break;
+			case 4:
+			extra_flag=true;
+			k1=0;
+			Pclear();
+			extra_menu();
+
+			while(extra_flag){
+			cout<<"Choose subItem: ";
+			cin>>k1;
+			cout<<endl;
+
+			switch(k1){
+				Pclear();
+				extra_menu();
+				case 0:
+				extra_flag=false;
+				break;
+				case 1:
+				first_RV=print_list(first_RV);
+				break;
+				case 2:
+				first_RV=Add_ResidualValue_list_from_Console(first_RV,first_Assets);
+				first_RV=print_list_in_file(first_RV);
+				changing=true;
+				break;
+				case 3:
+				if(changing==true)cout<<"Alert! Your Table will be rewrite if you continue"<<endl;
+				cout << "Do you want to continue(Y/N)?" ;
+				cin >> c ;
+				if(c=='Y' || c=='y') 
+					{
+						first_RV=create_ResidualValue_list_from_Console(first_Assets);
+						first_RV=print_list_in_file(first_RV);
+					}
+				break;
+
+			}
+							}
+			
+			break;
+			case 5:
+			extra_flag=true;
+			k1=0;
+			Pclear();
+			extra_menu();
+
+			while(extra_flag){
+			cout<<"Choose subItem: ";
+			cin>>k1;
+			cout<<endl;
+
+			switch(k1){
+				Pclear();
+				extra_menu();
+				case 0:
+				extra_flag=false;
+				break;
+				case 1:
+				first_Amort=print_list(first_Amort);
+				break;
+				case 2:
+				first_Amort=Add_Amortization_list_from_Console(first_Assets,first_Amort);
+				first_Amort=print_list_in_file(first_Amort);
+				changing=true;
+				break;
+				case 3:
+				if(changing==true)cout<<"Alert! Your Table will be rewrite if you continue"<<endl;
+				cout << "Do you want to continue(Y/N)?" ;
+				cin >> c ;
+				if(c=='Y' || c=='y') 
+					{
+						first_Amort=create_Amortization_list_from_Console(first_Assets);
+						first_Amort=print_list(first_Amort);
+					}
+				break;
+
+			}
+							}
+			
+			break;
+			case 6:
+			//List<Actions> *pointer,List<Condition> *Cond,List<Assets> *As
+			extra_flag=true;
+			k1=0;
+			Pclear();
+			extra_menu();
+
+			while(extra_flag){
+			cout<<"Choose subItem: ";
+			cin>>k1;
+			cout<<endl;
+
+			switch(k1){
+				Pclear();
+				extra_menu();
+				case 0:
+				extra_flag=false;
+				break;
+				case 1:
+				first_Act=print_list(first_Act);
+				break;
+				case 2:
+				first_Act=Add_Actions_list_from_Console(first_Act,first,first_Assets);
+				first_Act=print_list_in_file(first_Act);
+				changing=true;
+				break;
+				case 3:
+				if(changing==true)cout<<"Alert! Your Table will be rewrite if you continue"<<endl;
+				cout << "Do you want to continue(Y/N)?" ;
+				cin >> c ;
+				if(c=='Y' || c=='y') 
+					{
+						first_Act=create_Actions_list_from_Console(first,first_Assets);
+						first_Act=print_list(first_Act);
+					}
+				break;
+
+			}
+							}
+			break;
+			case 7:
+			
+			break;
+			default:
+			flag=false;
+			break;
+		}
+		cout<<endl;
+	}
+	
+
+	
+	
+}
+
