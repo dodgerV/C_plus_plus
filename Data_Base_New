@@ -1373,6 +1373,8 @@ List<Actions> *Add_Actions_list_from_Console(List<Actions> *pointer,List<Conditi
 	return pointer;
 }  
 
+
+
 //***************************************************************
 //***************************************************************
 //***************************************************************
@@ -1419,16 +1421,55 @@ void information()
 		cout<<endl;
 }
 
-List<Assets>* show_All_Constructions(List<Assets>* p)
+List<Assets>* show_All_Constructions(List<Assets>* p, List<Amortization> *amort,List<ResidualValue> *RV,List<Actions> *Act)
 {
 	cout<<"\n"<<"DEMONSTRATION"<<endl;
-	int i;
+	int i,j;
 	for(i=0;;i++){
+		//cout<<"ACT"<<endl;
 
 		if(p->data.code_MF==1){
 			p->data.print();
+			for(j=0;;j++)
+			{
+				
+				if(amort->data.code_Asset==p->data.code)
+				{
+					amort->data.print();
+				}
+				if(Act->next==NULL)break;
+					else Act=Act->next;
+			}
+			
+			for(j=0;;j++)
+			{
+				
+
+				if(RV->data.code_Asset==p->data.code)
+				{
+					RV->data.print();
+				}
+
+				if(RV->next==NULL)break;
+					else RV=RV->next;
+			}
+			for(j=0;;j++)
+			{
+				
+
+				if(Act->data.code_Asset==p->data.code)
+				{
+					Act->data.print();
+				}
+				if(Act->next==NULL)break;
+					else Act=Act->next;
+			}
 		}
-	
+
+		while(Act->prev!=NULL)Act=Act->prev;
+		while(amort->prev!=NULL)amort=amort->prev;
+		while(RV->prev!=NULL)RV=RV->prev;
+
 		if(p->next==NULL) break;
 		else p=p->next;
 	}
@@ -1585,6 +1626,9 @@ first_Act=Load_Actions_list_from_file(first,first_Assets);
 						first_Assets=print_list_in_file(first_Assets);
 					}
 				break;
+				case 4:
+				first_Assets=show_All_Constructions(first_Assets,first_Amort,first_RV,first_Act);
+				break;
 
 			}
 							}
@@ -1724,4 +1768,3 @@ first_Act=Load_Actions_list_from_file(first,first_Assets);
 	
 	
 }
-
